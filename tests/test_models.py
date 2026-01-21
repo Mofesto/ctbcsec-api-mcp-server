@@ -1,14 +1,7 @@
-from ctbcsec_mcp.models import (
-    OrderRequest, 
-    BuySell, 
-    PriceType, 
-    OrderCondition, 
-    TradeType, 
-    OrderType,
-    AccountInfo,
-    AccountType
-)
 import json
+
+from ctbcsec_mcp.models import AccountInfo, AccountType, BuySell, OrderCondition, OrderRequest, OrderType, PriceType, TradeType
+
 
 def test_order_request_defaults():
     """Test OrderRequest with default values."""

@@ -1,7 +1,10 @@
-import pytest
 from unittest.mock import MagicMock, patch
-from ctbcsec_mcp.server import mcp, initialize, login, stock_new_order
-from ctbcsec_mcp.models import BuySell, TradeType, OrderType, PriceType, OrderCondition
+
+import pytest
+
+from ctbcsec_mcp.models import BuySell, OrderCondition, OrderType, PriceType, TradeType
+from ctbcsec_mcp.server import initialize, login, mcp, stock_new_order
+
 
 @pytest.fixture
 def mock_wrapper(monkeypatch):

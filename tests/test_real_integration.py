@@ -1,6 +1,8 @@
 
 import pytest
+
 from ctbcsec_mcp.models import AccountType, ConnectionStatus, InitResponse, LoginResponse
+
 
 def test_real_initialize_success(trade_wrapper_real):
     """Test successful initialization with REAL COM object."""

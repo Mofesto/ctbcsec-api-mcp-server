@@ -18,33 +18,33 @@ from mcp.server.fastmcp import FastMCP
 try:
     from .models import (
         AccountInfo,
+        BuySell,
         ConnectionStatus,
         InitResponse,
         LoginResponse,
+        OrderCondition,
         OrderResponse,
+        OrderType,
+        PriceType,
+        ProductType,
         QueryResult,
         TradeType,
-        OrderType,
-        BuySell,
-        PriceType,
-        OrderCondition,
-        ProductType,
     )
     from .wrapper import TradeAppWrapper
 except ImportError:
     from ctbcsec_mcp.models import (
         AccountInfo,
+        BuySell,
         ConnectionStatus,
         InitResponse,
         LoginResponse,
+        OrderCondition,
         OrderResponse,
+        OrderType,
+        PriceType,
+        ProductType,
         QueryResult,
         TradeType,
-        OrderType,
-        BuySell,
-        PriceType,
-        OrderCondition,
-        ProductType,
     )
     from ctbcsec_mcp.wrapper import TradeAppWrapper
 

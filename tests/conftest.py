@@ -1,7 +1,8 @@
-import pytest
 import os
 import sys
 from unittest.mock import MagicMock
+
+import pytest
 
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -22,8 +23,9 @@ def mock_com_object():
 def trade_wrapper_mocked(mock_com_object, monkeypatch):
     """Fixture to provide a TradeAppWrapper with a mocked COM object."""
     import win32com.client
+
     from ctbcsec_mcp.wrapper import TradeAppWrapper
-    
+
     # Mock win32com.client.DispatchWithEvents
     monkeypatch.setattr("win32com.client.DispatchWithEvents", lambda progid, handler_class: mock_com_object)
     
@@ -35,6 +37,7 @@ def trade_wrapper_mocked(mock_com_object, monkeypatch):
 def trade_wrapper_real():
     """Fixture to provide a REAL TradeAppWrapper without mocking."""
     import win32com.client
+
     from ctbcsec_mcp.wrapper import TradeAppWrapper
     
     wrapper = TradeAppWrapper()

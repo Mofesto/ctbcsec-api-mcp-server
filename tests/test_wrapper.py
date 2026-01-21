@@ -1,6 +1,8 @@
 import pytest
+
+from ctbcsec_mcp.models import BuySell, OrderCondition, OrderType, PriceType, TradeType
 from ctbcsec_mcp.wrapper import TradeAppWrapper
-from ctbcsec_mcp.models import BuySell, PriceType, TradeType, OrderType, OrderCondition
+
 
 def test_wrapper_init(trade_wrapper_mocked, mock_com_object):
     """Test wrapper initialization."""

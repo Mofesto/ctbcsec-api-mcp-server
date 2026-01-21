@@ -1,8 +1,11 @@
 
-import pytest
 from unittest.mock import MagicMock
-from ctbcsec_mcp.server import initialize, login
+
+import pytest
+
 from ctbcsec_mcp.models import AccountInfo, AccountType
+from ctbcsec_mcp.server import initialize, login
+
 
 @pytest.fixture
 def mock_wrapper(monkeypatch):
@@ -82,6 +85,7 @@ def test_login_failure(mock_wrapper):
 def test_login_not_initialized(monkeypatch):
     """Test login when wrapper is not initialized."""
     import ctbcsec_mcp.server
+
     # Ensure trade_wrapper is None
     monkeypatch.setattr(ctbcsec_mcp.server, "trade_wrapper", None)
     # We also need to mock _initialize_wrapper so it doesn't create a real one

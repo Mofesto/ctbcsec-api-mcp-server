@@ -5,11 +5,13 @@ This module wraps the Windows COM object and provides a cleaner Python interface
 with proper error handling and response parsing.
 """
 
-import win32com.client
-import threading
-import queue
 import logging
-from typing import Optional, Tuple, Any
+import queue
+import threading
+from typing import Any, Optional, Tuple
+
+import win32com.client
+
 from .models import AccountInfo, AccountType, ConnectionStatus
 
 logger = logging.getLogger(__name__)

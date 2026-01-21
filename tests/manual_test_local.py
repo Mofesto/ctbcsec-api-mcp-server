@@ -3,14 +3,15 @@ Test script for local function testing without MCP layer.
 This allows you to test the wrapper and models directly.
 """
 
-import sys
 import os
+import sys
 
 # Add the project to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from ctbcsec_mcp.models import BuySell, OrderCondition, OrderType, PriceType, TradeType
 from ctbcsec_mcp.wrapper import TradeAppWrapper
-from ctbcsec_mcp.models import BuySell, PriceType, OrderCondition, TradeType, OrderType
+
 
 def test_initialization():
     """Test creating and initializing the wrapper."""
@@ -66,8 +67,8 @@ def test_models():
     print("Test 3: Pydantic Models")
     print("=" * 60)
     
-    from ctbcsec_mcp.models import OrderRequest, InitResponse, ConnectionStatus
-    
+    from ctbcsec_mcp.models import ConnectionStatus, InitResponse, OrderRequest
+
     # Test OrderRequest
     order = OrderRequest(
         account_id="123456",
