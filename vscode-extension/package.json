@@ -139,7 +139,7 @@
     },
     "devDependencies": {
         "@types/vscode": "^1.80.0",
-        "@types/node": "^20.0.0",
+        "@types/node": "^25.0.9",
         "eslint": "^9.39.2"
     },
     "dependencies": {}
