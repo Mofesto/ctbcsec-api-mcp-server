@@ -11,11 +11,11 @@ import sys
 import threading
 from typing import Any, Optional, Tuple
 
-# Only import win32com on Windows platforms
-if sys.platform == 'win32':
+# Import win32com (may be mocked on non-Windows platforms)
+try:
     import win32com.client
-else:
-    # Provide stub for non-Windows platforms
+except ImportError:
+    # If win32com is not available, this will be caught later
     win32com = None
 
 from .models import AccountInfo, AccountType, ConnectionStatus
@@ -38,14 +38,12 @@ class TradeAppWrapper:
         
     def create_com_object(self):
         """Create and initialize the COM object with event handler."""
-        if sys.platform != 'win32':
-            raise RuntimeError(
-                "CTS Trading API COM object is only available on Windows. "
-                "This platform does not support the trading functionality."
-            )
+        # On non-Windows platforms in test environment, win32com will be mocked by conftest.py
+        # In production on non-Windows, this will raise an error when trying to use the mock
         
         try:
             # Create COM object with event handler
+            # If win32com is not properly set up, this will raise an exception
             self.trade_app = win32com.client.DispatchWithEvents(
                 "DJTRADEOBJLibCTS.TradeApp",
                 EventHandler
@@ -56,6 +54,11 @@ class TradeAppWrapper:
             return True
         except Exception as e:
             logger.error(f"Failed to create COM object: {e}")
+            if sys.platform != 'win32':
+                logger.error(
+                    "CTS Trading API COM object is only available on Windows. "
+                    "In test environment, ensure win32com is mocked in conftest.py"
+                )
             raise RuntimeError(f"Failed to create COM object. Ensure CTS Trading API is installed: {e}")
     
     def init(self, trade_das_url: str) -> Tuple[int, int, str]:

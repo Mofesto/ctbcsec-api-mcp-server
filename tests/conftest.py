@@ -1,11 +1,17 @@
 import os
 import sys
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+# Mock win32com for non-Windows platforms before any imports
+if sys.platform != 'win32':
+    sys.modules['win32com'] = MagicMock()
+    sys.modules['win32com.client'] = MagicMock()
+    sys.modules['pythoncom'] = MagicMock()
 
 @pytest.fixture
 def mock_com_object():

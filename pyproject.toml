@@ -167,6 +167,7 @@ markers = [
     "slow: marks tests as slow",
     "integration: marks integration tests",
     "trading: marks trading-related tests",
+    "windows_only: marks tests that require Windows platform",
 ]
 
 [tool.coverage.run]
