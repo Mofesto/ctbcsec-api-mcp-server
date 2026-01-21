@@ -1,0 +1,81 @@
+name: VS Code Extension Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Extension version (e.g., 0.1.0)'
+        required: true
+        default: '0.1.0'
+
+jobs:
+  vscode-extension:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Get version from tag or input
+      id: get_version
+      run: |
+        if [ "${{ github.event_name }}" = "release" ]; then
+          VERSION=${GITHUB_REF#refs/tags/v}
+        else
+          VERSION=${{ github.event.inputs.version }}
+        fi
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "Extension version: $VERSION"
+
+    - name: Update package.json version
+      working-directory: ./vscode-extension
+      run: |
+        CURRENT_VERSION=$(node -p "require('./package.json').version")
+        if [ "$CURRENT_VERSION" != "${{ steps.get_version.outputs.VERSION }}" ]; then
+          npm version ${{ steps.get_version.outputs.VERSION }} --no-git-tag-version
+        else
+          echo "Version is already ${{ steps.get_version.outputs.VERSION }}, skipping npm version update"
+        fi
+
+    - name: Install dependencies
+      working-directory: ./vscode-extension
+      run: npm install
+
+    - name: Install vsce
+      run: npm install -g @vscode/vsce
+
+    - name: Package extension
+      working-directory: ./vscode-extension
+      run: vsce package
+
+    - name: Publish to VS Code Marketplace
+      working-directory: ./vscode-extension
+      env:
+        VSCE_PAT: ${{ secrets.VSCODE_MARKETPLACE_TOKEN }}
+      run: |
+        vsce publish -p $VSCE_PAT
+
+    - name: Upload VSIX artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: vscode-extension-${{ steps.get_version.outputs.VERSION }}
+        path: vscode-extension/*.vsix
+        retention-days: 90
+
+    - name: Attach VSIX to GitHub Release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: vscode-extension/*.vsix
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

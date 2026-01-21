@@ -1,27 +1,221 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61.0", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "ctbcsec-mcp-server"
-version = "0.1.0"
-description = "MCP server for CTBC Securities CTS Trading API"
-authors = [
-    { name = "CTBC Securities", email = "support@ctbcsec.com" }
-]
+dynamic = ["version"]
+description = "CTBC Securities MCP Server - Model Context Protocol server for CTBC Securities CTS Trading API"
 readme = "README.md"
+license = {text = "MIT"}
 requires-python = ">=3.10"
+authors = [
+    {name = "CTBC Securities", email = "support@ctbcsec.com"},
+]
+maintainers = [
+    {name = "CTBC Securities", email = "support@ctbcsec.com"},
+]
+keywords = [
+    "ctbc",
+    "securities",
+    "trading",
+    "mcp",
+    "model-context-protocol",
+    "taiwan-stock",
+    "api",
+    "cts",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
 dependencies = [
     "mcp>=1.1.0",
     "pywin32>=306",
     "pydantic>=2.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
     "pytest-mock>=3.10.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.25.0",
+    "bandit>=1.7.0",
+    "safety>=2.3.0",
+    "build>=1.0.0",
+    "twine>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/YOUR_USERNAME/ctbcsec-api-mcp-server"
+Documentation = "https://github.com/YOUR_USERNAME/ctbcsec-api-mcp-server#readme"
+Repository = "https://github.com/YOUR_USERNAME/ctbcsec-api-mcp-server"
+Issues = "https://github.com/YOUR_USERNAME/ctbcsec-api-mcp-server/issues"
+Changelog = "https://github.com/YOUR_USERNAME/ctbcsec-api-mcp-server/blob/main/CHANGELOG.md"
+PyPI = "https://pypi.org/project/ctbcsec-mcp-server/"
+Source = "https://github.com/YOUR_USERNAME/ctbcsec-api-mcp-server"
+Tracker = "https://github.com/YOUR_USERNAME/ctbcsec-api-mcp-server/issues"
+
+[project.scripts]
+ctbcsec-mcp = "ctbcsec_mcp.server:main"
+
+[tool.setuptools_scm]
+write_to = "ctbcsec_mcp/_version.py"
+version_scheme = "post-release"
+local_scheme = "node-and-date"
+fallback_version = "0.1.0"
+
+[tool.setuptools.package-data]
+ctbcsec_mcp = ["*.txt", "*.md"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests", "tests.*", "vscode-extension", "vscode-extension.*"]
+
+[tool.black]
+line-length = 127
+target-version = ['py310', 'py311', 'py312', 'py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  # auto-generated files
+  | ctbcsec_mcp/_version\.py
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 127
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+known_first_party = ["ctbcsec_mcp"]
+skip_gitignore = true
+skip = ["ctbcsec_mcp/_version.py"]
+extend_skip_glob = ["*/_version.py"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "mcp.*",
+    "win32com.*",
+    "pythoncom.*",
+]
+ignore_missing_imports = true
+ignore_errors = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = [
+    "--verbose",
+    "--tb=short",
+    "--strict-markers",
+    "--disable-warnings",
+    "--durations=10",
+    "--cov=ctbcsec_mcp",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+    "--asyncio-mode=auto",
+]
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks integration tests",
+    "trading: marks trading-related tests",
+]
+
+[tool.coverage.run]
+source = ["ctbcsec_mcp"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "setup.py",
+    "ctbcsec_mcp/_version.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+show_missing = true
+skip_covered = false
+skip_empty = false
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[tool.bandit]
+exclude_dirs = ["tests", "examples"]
+skips = ["B101", "B601"]
+
+[tool.ruff]
+line-length = 127
+target-version = "py310"
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".venv",
+    "build",
+    "dist",
+    "ctbcsec_mcp/_version.py",
 ]
 
 [tool.uv]
@@ -29,13 +223,3 @@ dev-dependencies = [
     "mcp[cli]>=1.1.0",
 ]
 
-[tool.hatch.build.targets.wheel]
-packages = ["ctbcsec_mcp"]
-
-[project.scripts]
-ctbcsec-mcp = "ctbcsec_mcp.server:main"
-
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-testpaths = ["tests"]
-python_files = ["test_*.py"]

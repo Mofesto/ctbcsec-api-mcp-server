@@ -1,0 +1,146 @@
+{
+    "name": "ctbcsec-mcp-server",
+    "displayName": "CTBC Securities MCP Server",
+    "description": "CTBC Securities MCP Server - Complete Taiwan Stock Trading & Market Data Query via CTS API",
+    "version": "0.1.0",
+    "publisher": "YOUR_PUBLISHER_NAME",
+    "icon": "icon.png",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Other",
+        "Data Science",
+        "Machine Learning"
+    ],
+    "keywords": [
+        "ctbc",
+        "securities",
+        "trading",
+        "mcp",
+        "model-context-protocol",
+        "taiwan-stock",
+        "api",
+        "finance",
+        "cts"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/YOUR_USERNAME/ctbcsec-api-mcp-server"
+    },
+    "bugs": {
+        "url": "https://github.com/YOUR_USERNAME/ctbcsec-api-mcp-server/issues"
+    },
+    "homepage": "https://github.com/YOUR_USERNAME/ctbcsec-api-mcp-server#readme",
+    "license": "MIT",
+    "author": {
+        "name": "CTBC Securities",
+        "email": "support@ctbcsec.com"
+    },
+    "main": "./src/extension.js",
+    "activationEvents": [
+        "onStartupFinished",
+        "*"
+    ],
+    "contributes": {
+        "modelContextProtocol": {
+            "servers": {
+                "ctbcsec-api": {
+                    "command": "python",
+                    "args": [
+                        "-m",
+                        "ctbcsec_mcp.server"
+                    ],
+                    "env": {
+                        "CTBC_USERNAME": "${config:ctbcsec-mcp.username}",
+                        "CTBC_PASSWORD": "${env:CTBC_PASSWORD}",
+                        "CTBC_CERT_PATH": "${config:ctbcsec-mcp.certPath}",
+                        "CTBC_CERT_PASSWORD": "${env:CTBC_CERT_PASSWORD}"
+                    }
+                }
+            }
+        },
+        "configuration": {
+            "title": "CTBC Securities MCP Server",
+            "properties": {
+                "ctbcsec-mcp.username": {
+                    "type": "string",
+                    "default": "",
+                    "description": "CTBC Securities Account Username"
+                },
+                "ctbcsec-mcp.certPath": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to Certificate File"
+                },
+                "ctbcsec-mcp.autoStart": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Auto-start MCP Server when VS Code starts"
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "ctbcsec-mcp.configure",
+                "title": "Configure CTBC MCP Server",
+                "category": "CTBC MCP"
+            },
+            {
+                "command": "ctbcsec-mcp.start",
+                "title": "Start CTBC MCP Server",
+                "category": "CTBC MCP"
+            },
+            {
+                "command": "ctbcsec-mcp.stop",
+                "title": "Stop CTBC MCP Server",
+                "category": "CTBC MCP"
+            },
+            {
+                "command": "ctbcsec-mcp.restart",
+                "title": "Restart CTBC MCP Server",
+                "category": "CTBC MCP"
+            },
+            {
+                "command": "ctbcsec-mcp.showLogs",
+                "title": "Show CTBC MCP Server Logs",
+                "category": "CTBC MCP"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "ctbcsec-mcp.configure",
+                    "when": "true"
+                },
+                {
+                    "command": "ctbcsec-mcp.start",
+                    "when": "true"
+                },
+                {
+                    "command": "ctbcsec-mcp.stop",
+                    "when": "true"
+                },
+                {
+                    "command": "ctbcsec-mcp.restart",
+                    "when": "true"
+                },
+                {
+                    "command": "ctbcsec-mcp.showLogs",
+                    "when": "true"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "lint": "eslint .",
+        "pretest": "npm run lint",
+        "test": "node ./test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.80.0",
+        "@types/node": "^20.0.0",
+        "eslint": "^8.0.0"
+    },
+    "dependencies": {}
+}

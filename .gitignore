@@ -162,3 +162,12 @@ Thumbs.db
 # Project specific
 appsetting.json
 ref/
+
+# VS Code Extension
+vscode-extension/node_modules/
+vscode-extension/*.vsix
+vscode-extension/package-lock.json
+
+# Auto-generated version file
+ctbcsec_mcp/_version.py
+

@@ -1,0 +1,14 @@
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CTS-API-GUIDEBOOK.md
+include TESTING.md
+include appsetting.json
+recursive-include ctbcsec_mcp *.txt *.md
+recursive-exclude tests *
+recursive-exclude vscode-extension *
+recursive-exclude .github *
+exclude .gitignore
+exclude .pytest_cache
+exclude .venv
+exclude uv.lock
