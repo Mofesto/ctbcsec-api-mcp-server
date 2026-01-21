@@ -7,10 +7,16 @@ with proper error handling and response parsing.
 
 import logging
 import queue
+import sys
 import threading
 from typing import Any, Optional, Tuple
 
-import win32com.client
+# Only import win32com on Windows platforms
+if sys.platform == 'win32':
+    import win32com.client
+else:
+    # Provide stub for non-Windows platforms
+    win32com = None
 
 from .models import AccountInfo, AccountType, ConnectionStatus
 
@@ -32,6 +38,12 @@ class TradeAppWrapper:
         
     def create_com_object(self):
         """Create and initialize the COM object with event handler."""
+        if sys.platform != 'win32':
+            raise RuntimeError(
+                "CTS Trading API COM object is only available on Windows. "
+                "This platform does not support the trading functionality."
+            )
+        
         try:
             # Create COM object with event handler
             self.trade_app = win32com.client.DispatchWithEvents(

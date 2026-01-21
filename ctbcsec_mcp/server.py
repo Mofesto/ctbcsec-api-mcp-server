@@ -7,6 +7,7 @@ Supports stock and futures/options trading operations.
 
 import json
 import logging
+import sys
 from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
@@ -30,7 +31,11 @@ try:
         QueryResult,
         TradeType,
     )
-    from .wrapper import TradeAppWrapper
+    # Only import TradeAppWrapper on Windows platforms
+    if sys.platform == 'win32':
+        from .wrapper import TradeAppWrapper
+    else:
+        TradeAppWrapper = None
 except ImportError:
     from ctbcsec_mcp.models import (
         AccountInfo,
@@ -46,7 +51,11 @@ except ImportError:
         QueryResult,
         TradeType,
     )
-    from ctbcsec_mcp.wrapper import TradeAppWrapper
+    # Only import TradeAppWrapper on Windows platforms
+    if sys.platform == 'win32':
+        from ctbcsec_mcp.wrapper import TradeAppWrapper
+    else:
+        TradeAppWrapper = None
 
 # Configure logging
 logging.basicConfig(
@@ -59,13 +68,23 @@ logger = logging.getLogger(__name__)
 mcp = FastMCP("ctbcsec-trading-api")
 
 # Global trading app wrapper instance
-trade_wrapper: Optional[TradeAppWrapper] = None
+trade_wrapper: Optional['TradeAppWrapper'] = None
 
 
 def _initialize_wrapper():
     """Initialize the trading wrapper if not already done."""
     global trade_wrapper
+    
+    # Only initialize on Windows platforms
+    if sys.platform != 'win32':
+        logger.warning("CTS Trading API is only supported on Windows platform")
+        return
+    
     if trade_wrapper is None:
+        if TradeAppWrapper is None:
+            logger.error("TradeAppWrapper not available on this platform")
+            return
+        
         trade_wrapper = TradeAppWrapper()
         try:
             trade_wrapper.create_com_object()
