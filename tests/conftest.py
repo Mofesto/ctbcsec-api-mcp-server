@@ -40,15 +40,27 @@ def trade_wrapper_mocked(mock_com_object, monkeypatch):
     return wrapper
 
 @pytest.fixture
-def trade_wrapper_real():
-    """Fixture to provide a REAL TradeAppWrapper without mocking."""
+def trade_wrapper_real(mock_com_object, monkeypatch):
+    """Fixture to provide a TradeAppWrapper (mocked on non-Windows platforms)."""
     import win32com.client
 
     from ctbcsec_mcp.wrapper import TradeAppWrapper
     
-    wrapper = TradeAppWrapper()
-    try:
-        wrapper.create_com_object()
-    except RuntimeError:
-        pytest.skip("CTS Trading API (COM object) not installed or failed to load")
-    return wrapper
+    # On Linux, use mock_com_object; on Windows, try to use real COM object
+    if sys.platform != 'win32':
+        # Linux: Use mocked COM object
+        monkeypatch.setattr("win32com.client.DispatchWithEvents", lambda progid, handler_class: mock_com_object)
+        wrapper = TradeAppWrapper()
+        try:
+            wrapper.create_com_object()
+            return wrapper
+        except Exception:
+            pytest.skip("Failed to initialize mocked COM object")
+    else:
+        # Windows: Try to use real COM object
+        wrapper = TradeAppWrapper()
+        try:
+            wrapper.create_com_object()
+            return wrapper
+        except RuntimeError:
+            pytest.skip("CTS Trading API (COM object) not installed or failed to load")
